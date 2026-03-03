@@ -4,14 +4,14 @@ This Project implemented various machine learning model to predict customer who 
 
 # Models:
 
-Parametric Models: Logistic Regression, Ridge
-Non Parametric Model: Decision Tree, Random Forest, XG Boost
+- Parametric Models: Logistic Regression, Ridge
+- Non Parametric Model: Decision Tree, Random Forest, XG Boost
 
 # Process:
-Data Preprocessing
-Exploratory Data Analysis
-Model Implementation: Building and tuning models
-Model Evaluation: Accuracy, Precision, AUC,..
+- Data Preprocessing
+- Exploratory Data Analysis
+- Model Implementation: Building and tuning models
+- Model Evaluation: Accuracy, Precision, AUC,..
 
 # Result
 XG Boost receiced the highest AUC
