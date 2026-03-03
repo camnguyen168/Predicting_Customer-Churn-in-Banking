@@ -8,7 +8,7 @@ This Project implemented various machine learning model to predict customer who 
 - Non Parametric Model: Decision Tree, Random Forest, XG Boost
 
 # Process:
-- Data Preprocessing
+- Data Preprocessing: One Hot encoding, imputation,...
 - Exploratory Data Analysis
 - Model Implementation: Building and tuning models
 - Model Evaluation: Accuracy, Precision, AUC,..
