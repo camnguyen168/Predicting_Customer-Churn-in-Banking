@@ -17,6 +17,5 @@ This Project implemented various machine learning model to predict customer who 
 XG Boost receiced the highest AUC
 
 
-Note: The code of Logistic Regression is already adjusted with auc= 0.817, the term paper still show the wrong number 0.183
 
 
