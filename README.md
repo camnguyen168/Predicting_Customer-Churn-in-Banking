@@ -12,6 +12,10 @@ This Project implemented various machine learning model to predict customer who 
 - Exploratory Data Analysis
 - Model Implementation: Building and tuning models
 - Model Evaluation: Accuracy, Precision, AUC,..
+- Interpretability: LIME, Permutation Feature Importance
+  <img width="1001" height="717" alt="image" src="https://github.com/user-attachments/assets/27dd7ed2-d7ae-44fc-8064-503e374687cc" />
+
+  
 
 # Result
 XG Boost receiced the highest AUC
