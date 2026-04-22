@@ -13,8 +13,6 @@ This Project implemented various machine learning model to predict customer who 
 - Model Implementation: Building and tuning models
 - Model Evaluation: Accuracy, Precision, AUC,..
 - Interpretability: LIME, Permutation Feature Importance
-  <img width="932" height="328" alt="image" src="https://github.com/user-attachments/assets/b6bc5d68-b0b1-43eb-b8e6-851ce5365e34" />
-Lime Result of first local position
 
   
 
