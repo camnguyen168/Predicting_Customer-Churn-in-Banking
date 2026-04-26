@@ -1,0 +1,215 @@
+---
+title: "Document_creation"
+output: html_document
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo =TRUE,    # Hides the code
+  message = FALSE, # Hides package loading messages
+  warning = FALSE# Hides warnings 
+)
+```
+---
+title: "Load Library"
+output: html_document
+date: "2026-04-25"
+---
+```{r load-data, message = FALSE}
+knitr::opts_chunk$set(cache = T)## Keeps the document fast
+library(pagedown)
+library(readxl)
+library(gt)
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(gt)
+library(ggplot2)
+library(plotly)
+library(lubridate)
+library(tinytex)
+```
+
+  
+# Crime Incident Report Data
+
+```{r}
+setwd("~/Documents/uni_UDE/AdvanceR/")
+crime_data <- readRDS("Crime_Large.rds")
+field_explanation <- readxl::read_xlsx("FieldExplanation.xlsx")
+
+
+crime_data %>%
+  head(10) %>%
+  gt() %>%
+  tab_header(
+    title = "Crime Incident Reports Sample",
+    subtitle = "Displaying the first 10 records from the dataset"
+  ) %>%
+  tab_options(
+    table.width = pct(100)
+  )
+```
+
+The "Crime Incident Reports" dataset contains `r nrow(crime_data)` individual observations 
+across `r ncol(crime_data)` different variables. Based on the field explanations, 
+the data provides detailed records of incidents ranging from `r min(crime_data$YEAR, na.rm = TRUE)` 
+to `r max(crime_data$YEAR, na.rm = TRUE)`.
+
+<span style="font-size: 0.8em;">The "Crime Incident Reports" dataset contains `r nrow(crime_data)` individual observations 
+across `r ncol(crime_data)` different variables. Based on the field explanations, 
+the data provides detailed records of incidents ranging from `r min(crime_data$YEAR, na.rm = TRUE)` 
+to `r max(crime_data$YEAR, na.rm = TRUE)`.</span>
+
+
+# Data Cleaning
+```{r, message=FALSE, warning=FALSE}
+
+# 1. Tidy the data
+field_explanation_tidy <- field_explanation %>%
+  clean_names() %>%
+  fill(everything(), .direction = "down") %>%
+  filter(if_any(everything(), ~ !is.na(.))) %>%
+  distinct() %>%
+  # Splitting the column into three
+  # Check if your data uses "_" or " ". If it's spaces, use sep = " "
+  separate(
+    col = field_name_data_type_required, 
+    into = c("field_name", "data_type", "required"), 
+    sep = "," 
+  )
+# 2. Display as a formatted table
+field_explanation_tidy %>%
+  gt() %>%
+  tab_header(
+    title = "Field Explanations: Tidy View",
+    subtitle = "Definitions and metadata for the Crime Incident dataset"
+  ) %>%
+  tab_options(table.width = pct(100))
+```
+
+# Explorative Data Analysis
+
+```{r eda-days, message=FALSE, warning=FALSE}
+# 1. Prepare the data
+# We group by day_of_week and count the number of rows (incidents)
+day_counts <- crime_data %>%
+  group_by(DAY_OF_WEEK) %>%
+  summarise(incident_count = n()) %>%
+  # Ensure days are in a logical order instead of alphabetical
+  mutate(day_of_week = factor(DAY_OF_WEEK, 
+                               levels = c("Monday", "Tuesday", "Wednesday", 
+                                          "Thursday", "Friday", "Saturday", "Sunday")))
+
+# 2. Create the Bar Chart
+ggplot(day_counts, aes(x = DAY_OF_WEEK, y = incident_count, fill = day_of_week)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set3") + # Nice soft colors
+  theme_minimal() +
+  labs(
+    title = "Crime Incidents by Day of the Week",
+    x = "Day",
+    y = "Total Incidents"
+  ) +
+  theme(legend.position = "none")
+
+# 3. Create the Summary Table
+day_counts %>%
+  gt() %>%
+  tab_header(
+    title = "Frequency of Incidents",
+    subtitle = "Summary table by day of the week"
+  ) %>%
+  cols_label(
+    day_of_week = "Day",
+    incident_count = "Number of Incidents"
+  ) %>%
+  fmt_number(columns = incident_count, decimals = 0) %>%
+  tab_caption(caption = "Table 1: Total crime incidents recorded for each day of the week.")
+# 1. Compute incidents by Year and Month and create the Date variable
+time_counts <- crime_data %>%
+  group_by(YEAR, MONTH) %>%
+  summarise(incident_count = n(), .groups = "drop") %>%
+  # Create a date object (e.g., 2024-01-01)
+  mutate(Date = make_date(year = YEAR, month = MONTH, day = 1)) %>%
+  arrange(Date)
+
+# 2. Create the ggplot
+# We use a line and points to show the trend and individual monthly totals
+p <- ggplot(time_counts, aes(x = Date, y = incident_count, group = 1)) +
+  geom_line(color = "#0072B2", linewidth = 1) +
+  geom_point(color = "#0072B2", size = 1.5) +
+  theme_minimal() +
+  labs(
+    title = "Crime Incident Trends Over Time",
+    x = "Timeline",
+    y = "Number of Incidents"
+  ) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "6 months")
+
+# 3. Make the plot interactive
+# ggplotly converts the static plot 'p' into an interactive version
+ggplotly(p)
+```
+<ol>
+  <li>Phase One
+    <ol>
+      <li>Sub-task A</li>
+      <li>Sub-task B</li>
+    </ol>
+  </li>
+  <li>Phase Two</li>
+</ol>
+
+<style>
+ol { counter-reset: item; }
+ol li { display: block; }
+ol li:before { content: counters(item, ".") ". "; counter-increment: item; }
+</style>
+
+```{r plotly-filter, message=FALSE, warning=FALSE}
+library(plotly)
+library(crosstalk)
+library(dplyr)
+library(lubridate)
+
+# 1. Prepare data with DISTRICT included
+time_district_counts <- crime_data %>%
+  group_by(YEAR, MONTH, DISTRICT) %>%
+  summarise(incident_count = n(), .groups = "drop") %>%
+  mutate(Date = make_date(year = YEAR, month = MONTH, day = 1)) %>%
+  filter(!is.na(DISTRICT)) # Clean up any missing district info
+
+# 2. Create the SharedData object
+shared_crime <- SharedData$new(time_district_counts)
+
+# 3. Create the filter widget
+# This creates the dropdown menu
+filter_dropdown <- filter_select(
+  id = "district-selector",
+  label = "Select a District",
+  sharedData = shared_crime,
+  group = ~DISTRICT
+)
+
+# 4. Create the plot using the SharedData
+p_filtered <- ggplot(shared_crime, aes(x = Date, y = incident_count, color = DISTRICT, group = DISTRICT)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.5) +
+  theme_minimal() +
+  labs(
+    title = "Monthly Incidents by District",
+    x = "Timeline",
+    y = "Incident Count"
+  ) +
+  theme(legend.position = "none") # Dropdown replaces need for a messy legend
+
+# 5. Arrange them together
+# We use bscols to put the filter on top of the plot
+bscols(
+  widths = c(12),
+  filter_dropdown,
+  ggplotly(p_filtered, tooltip = c("Date", "incident_count", "DISTRICT"))
+)
+```
+
