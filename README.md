@@ -20,5 +20,5 @@ This Project implemented various machine learning model to predict customer who 
 XG Boost receiced the highest AUC
 
 
-Code: Python and R
+Code: R and Python
 
