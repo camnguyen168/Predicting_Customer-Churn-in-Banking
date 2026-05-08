@@ -17,7 +17,7 @@ This Project implemented various machine learning model to predict customer who 
   
 
 # Result
-XG Boost receiced the highest AUC
+XG Boost receiced the highest AUC, 
 Age and number of product are the important variables to predict customer churn
 
 
