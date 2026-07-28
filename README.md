@@ -19,7 +19,7 @@ This Project implemented various machine learning model to predict customer who 
 # Result
 XG Boost receiced the highest AUC, 
 Age and number of product are the important variables to predict customer churn
-
+Feature importance indicates how strongly a variable contributes to model predictions; it does not establish that the feature causes churn (causality). Retention decisions should therefore combine model predictions with business context.
 
 Code: R and Python
 
